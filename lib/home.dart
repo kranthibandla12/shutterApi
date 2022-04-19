@@ -1,5 +1,7 @@
 // import 'dart:js';
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shutter_api/json.dart';
 import 'package:shutter_api/models/ShutterStockModel.dart';
@@ -16,6 +18,8 @@ class _homeState extends State<home> {
   ShutterStockModel model = ShutterStockModel();
   String quality = "preview";
   String link = "abc";
+  final List<String> urls = ['a', 'b', 'c', 'd'];
+  ScrollController scrollcontroller = ScrollController();
   // var resoul = [
   //   "preview",
   //   "small_thumb",
@@ -48,6 +52,20 @@ class _homeState extends State<home> {
     super.initState();
     // futureAlbum =
     imageLoader();
+    scrollcontroller.addListener(pagination);
+  }
+
+  void pagination() async {
+    if ((scrollcontroller.position.pixels ==
+            scrollcontroller.position.maxScrollExtent) &&
+        (urls.length < 20)) {
+      print("pass 1");
+      await Future.delayed(Duration(seconds: 1));
+      setState(() {
+        urls.add('e');
+        urls.add('f');
+      });
+    }
   }
 
   @override
@@ -60,23 +78,10 @@ class _homeState extends State<home> {
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            :
-            // child: Text(model.data![index].aspect.toString()),
-            // child: Text(model.search_id!),
-            // Container(
-            //     child: Text("hello"),
-            //   )
-            Center(
+            : Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // DecoratedBox(
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.red,
-                    //     border: Border.all(color: Colors.black38, width: 3),
-                    //     borderRadius: BorderRadius.circular(50),
-                    //   ),
-                    // ),
                     Expanded(
                       flex: 1,
                       child: Padding(
@@ -117,50 +122,43 @@ class _homeState extends State<home> {
                     Expanded(
                       flex: 20,
                       child: ListView.builder(
-                          itemCount: response["data"].length,
+                          controller: scrollcontroller,
+                          itemCount:
+                              urls.length < 20 ? urls.length + 1 : urls.length,
+                          // urls.length + 1,
                           itemBuilder: (context, index) {
-                            return SizedBox(
-                                height: 300,
-                                width: double.infinity,
-                                //link : response["data"][index]["assets"][quality]["url"],
-                                child: Image.network(
-                                  model.data![index].assets!.preview!.url!,
-                                  //response["data"][index]["assets"][quality]["url"],
-                                  fit: BoxFit.cover,
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  },
-                                )
-                                // Image.network(response["data"][index]
-                                //             ["assets"][quality]["url"]) ==
-                                //         ConnectionState.waiting
-                                //     ? Center(child: CircularProgressIndicator())
-                                //     : Image.network(
-                                //         response["data"][index]["assets"][quality]
-                                //             ["url"],
-                                //         fit: BoxFit.cover,
-                                //       ),
-                                //   Image.network(
-                                // response["data"][index]["assets"][quality]
-                                //     ["url"],
-                                // fit: BoxFit.cover,
-                                );
+                            index < urls.length
+                                ? urls[index] =
+                                    model.data![index].assets!.preview1500!.url!
+                                : print("object");
+                            // urls[index] =
+                            //     model.data![index].assets!.preview1500!.url!;
+                            return index < urls.length
+                                ? SizedBox(
+                                    height: 300,
+                                    width: double.infinity,
+                                    //link : response["data"][index]["assets"][quality]["url"],
+                                    child: Image.network(
+                                      urls[index],
+                                      //response["data"][index]["assets"][quality]["url"],
+                                      fit: BoxFit.cover,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return const Center(
+                                            //child: Text("data")
+                                            child: CircularProgressIndicator());
+                                      },
+                                    ))
+                                : Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 18),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
                           }),
                     )
-                    // ListView.builder(
-                    //     itemCount: response["data"].length,
-                    //     itemBuilder: ((context, index) => SizedBox(
-                    //           // width: double.infinity,
-                    //           // height: 200,
-                    //           child: Image.network(
-                    //             response["data"][index]["assets"][quality]
-                    //                 ["url"],
-                    //             // fit: BoxFit.cover,
-                    //           ),
-                    //         )))
                   ],
                 ),
               )
