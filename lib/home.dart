@@ -18,7 +18,7 @@ class _homeState extends State<home> {
   ShutterStockModel model = ShutterStockModel();
   String quality = "preview";
   String link = "abc";
-  final List<String> urls = ['a', 'b', 'c', 'd'];
+  List<String> urls = ['a', 'b', 'c', 'd'];
   ScrollController scrollcontroller = ScrollController();
   // var resoul = [
   //   "preview",
@@ -68,6 +68,26 @@ class _homeState extends State<home> {
     }
   }
 
+  String fetch(index, quality) {
+    switch (quality) {
+      case "preview":
+        return urls[index] = model.data![index].assets!.preview!.url!;
+      case "small_thumb":
+        return urls[index] = model.data![index].assets!.smallThumb!.url!;
+      case "large_thumb":
+        return urls[index] = model.data![index].assets!.largeThumb!.url!;
+      case "huge_thumb":
+        return urls[index] = model.data![index].assets!.hugeThumb!.url!;
+      case "preview_1000":
+        return urls[index] = model.data![index].assets!.preview1000!.url!;
+      case "preview_1500":
+        return urls[index] = model.data![index].assets!.preview1500!.url!;
+      default:
+        return urls[index] = model.data![index].assets!.preview!.url!;
+    }
+    // return urls[index] = model.data![index].assets!.preview!.url!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,6 +131,10 @@ class _homeState extends State<home> {
                               setState(() {
                                 quality = value!;
                                 print(quality);
+                                //empty the list
+                                urls.clear();
+                                urls = ['a', 'b', 'c', 'd'];
+                                scrollcontroller.position.moveTo(0);
                               });
                             }),
                       ),
@@ -128,8 +152,8 @@ class _homeState extends State<home> {
                           // urls.length + 1,
                           itemBuilder: (context, index) {
                             index < urls.length
-                                ? urls[index] =
-                                    model.data![index].assets!.preview1500!.url!
+                                ? urls[index] = fetch(index, quality)
+                                // model.data![index].assets!.preview1500!.url!
                                 : print("object");
                             // urls[index] =
                             //     model.data![index].assets!.preview1500!.url!;
