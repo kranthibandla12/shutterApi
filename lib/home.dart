@@ -122,7 +122,7 @@ class _homeState extends State<home> {
           title: Text("ShutterStock Flutter Api"),
         ),
         body: response == null
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             :
@@ -162,7 +162,7 @@ class _homeState extends State<home> {
                               );
                             }).toList(),
                             dropdownColor: Colors.lightGreen,
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: const TextStyle(fontSize: 18, color: Colors.black),
                             //focusColor: Colors.red,
                             //iconEnabledColor: Colors.black,
                             //isExpanded: true,
